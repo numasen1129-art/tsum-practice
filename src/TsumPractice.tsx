@@ -364,7 +364,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
       const C = e.x * s.y - s.x * e.y;
       const d = Math.abs(A * t.x + B * t.y + C) / Math.sqrt(A * A + B * B);
       if (d <= TSUM_RADIUS) {
-        t.freezeStage = Math.min(3, t.freezeStage + 1);
+        t.freezeStage = Math.min(3, t.freezeStage + 1)as 0 | 1 | 2 | 3;
       }
     }
 
@@ -378,7 +378,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
         const dx = t.x - src.x;
         const dy = t.y - src.y;
         if (dx * dx + dy * dy <= r2) {
-          t.freezeStage = Math.min(3, t.freezeStage + 1);
+          t.freezeStage = Math.min(3, t.freezeStage + 1)as 0 | 1 | 2 | 3;
         }
       }
     }
