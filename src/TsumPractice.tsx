@@ -502,10 +502,28 @@ const isHit = (t: Tsum, mx: number, my: number) => {
         const p = getPointerPos(e);
         handleMove(p.x, p.y);
       }}
-      onTouchEnd={e => {
-        e.preventDefault();
-        handleEnd();
-      }}
+     onTouchEnd={e => {
+  e.preventDefault();
+
+  // ドラッグしていなかった = タップ
+  if (!justDraggedRef.current) {
+    const p = getPointerPos(e);
+
+    for (const t of tsumsRef.current) {
+      if (t.freezeStage > 0) {
+        const dx = t.x - p.x;
+        const dy = t.y - p.y;
+        if (dx * dx + dy * dy <= TSUM_RADIUS * TSUM_RADIUS) {
+          resetBoardOnly();
+          return;
+        }
+      }
+    }
+  }
+
+  justDraggedRef.current = false;
+  handleEnd();
+}}
 
       onClick={e => {
         if (gameOver) return;
