@@ -55,7 +55,7 @@ const MAX_TRACE_DIST = TSUM_DIAM * 0.9;
 const FREEZE_MIN_CHAIN = 3;
 
 /* 時間 */
-const TIME_LIMIT_MS = 10_000;
+const TIME_LIMIT_MS = 30_000;
 const WARNING_TIME_MS = 3_000;
 
 /* =====================================================
