@@ -27,9 +27,9 @@ const TSUM_DIAM = TSUM_RADIUS * 2;
 const COLORS = ["#FF6B6B", "#FFD166", "#06D6A0", "#C77DFF"];
 const FREEZE_COLORS = [
   "",
-  "rgba(150,200,255,0.5)",
-  "rgba(80,150,255,0.65)",
-  "rgba(30,90,200,0.85)",
+  "rgba(150,200,255,0.85)",
+  "rgba(80,150,255,0.8)",
+  "rgba(30,90,200,0.8)",
 ];
 
 /* 枠（判定） */
@@ -58,6 +58,22 @@ const FREEZE_MIN_CHAIN = 3;
 const TIME_LIMIT_MS = 30_000;
 const WARNING_TIME_MS = 3_000;
 
+
+const drawHex = (ctx: CanvasRenderingContext2D, r: number) => {
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i + Math.PI / 6; // 30度回転
+    const x = Math.cos(a) * r;
+    const y = Math.sin(a) * r;
+
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+};
+
+
+
 /* =====================================================
    メイン
 ===================================================== */
@@ -73,6 +89,8 @@ export default function TsumPractice() {
   const [gameOver, setGameOver] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const linkSound = useRef<HTMLAudioElement | null>(null);
+const deleteSound = useRef<HTMLAudioElement | null>(null);
   const tsumsRef = useRef<Tsum[]>([]);
 
   const draggingRef = useRef(false);
@@ -90,10 +108,12 @@ export default function TsumPractice() {
   /* =====================================================
      初期化
   ===================================================== */
-  useEffect(() => {
-    resetGame();
-    return stopTimer;
-  }, []);
+ useEffect(() => {
+  linkSound.current = new Audio("/link.mp3");
+  deleteSound.current = new Audio("/delete.mp3");
+
+  return stopTimer;
+}, []);
 
   /* =====================================================
      タイマー
@@ -192,6 +212,7 @@ export default function TsumPractice() {
      リセット
   ===================================================== */
   const resetBoardOnly = () => {
+(deleteSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
     setResetCount(c => c + 1);
     finalizeCoin();
     tsumsRef.current = generateBoard();
@@ -245,7 +266,9 @@ const getPointerPos = (e: PointerEvent) => {
      なぞり判定
   ===================================================== */
   const handleStart = (x: number, y: number) => {
+ if (!gameStartTimeRef.current) resetGame();  
   if (gameOver) return;
+
 
   draggingRef.current = true;
   justDraggedRef.current = false;
@@ -332,6 +355,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
         t.selected = true;
         chainColorRef.current = t.color;
         chainRef.current.push(t.id);
+(linkSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
         return;
       }
 
@@ -340,6 +364,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
 
       t.selected = true;
       chainRef.current.push(t.id);
+(linkSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
       return;
     }
   };
@@ -438,12 +463,11 @@ const isHit = (t: Tsum, mx: number, my: number) => {
       );
       ctx.fill();
 
-      if (t.freezeStage > 0) {
-        ctx.fillStyle = FREEZE_COLORS[t.freezeStage];
-        ctx.beginPath();
-        ctx.ellipse(0, 0, TSUM_RADIUS, TSUM_RADIUS, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    if (t.freezeStage > 0) {
+  ctx.fillStyle = FREEZE_COLORS[t.freezeStage];
+  drawHex(ctx, TSUM_RADIUS);
+  ctx.fill();
+}
 
       ctx.restore();
     }
@@ -545,7 +569,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
       }}
 
       style={{
-        background: "#f5f5f5",
+        background: "#5A5A5A",
         display: "block",
         touchAction: "none",       
         pointerEvents: gameOver ? "none" : "auto",
