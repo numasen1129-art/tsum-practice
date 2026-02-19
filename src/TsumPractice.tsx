@@ -97,6 +97,7 @@ const deleteSound = useRef<HTMLAudioElement | null>(null);
   const chainRef = useRef<number[]>([]);
   const chainColorRef = useRef<number | null>(null);
   const justDraggedRef = useRef(false);
+const lastLinkSoundRef = useRef(0);
 
   /* 凍結円用スナップショット */
   const frozenSnapshotRef = useRef<Set<number>>(new Set());
@@ -109,8 +110,8 @@ const deleteSound = useRef<HTMLAudioElement | null>(null);
      初期化
   ===================================================== */
  useEffect(() => {
- // linkSound.current = new Audio("/link.mp3");
- // deleteSound.current = new Audio("/delete.mp3");
+  linkSound.current = new Audio("/link.mp3");
+  deleteSound.current = new Audio("/delete.mp3");
 
   return stopTimer;
 }, []);
@@ -212,7 +213,10 @@ const deleteSound = useRef<HTMLAudioElement | null>(null);
      リセット
   ===================================================== */
   const resetBoardOnly = () => {
-(deleteSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
+if (deleteSound.current) {
+  deleteSound.current.currentTime = 0;
+  deleteSound.current.play();
+}
     setResetCount(c => c + 1);
     finalizeCoin();
     tsumsRef.current = generateBoard();
@@ -355,7 +359,12 @@ const isHit = (t: Tsum, mx: number, my: number) => {
         t.selected = true;
         chainColorRef.current = t.color;
         chainRef.current.push(t.id);
-(linkSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
+const now = performance.now();
+if (linkSound.current && now - lastLinkSoundRef.current > 80) {
+  lastLinkSoundRef.current = now;
+  linkSound.current.currentTime = 0;
+  linkSound.current.play();
+}
         return;
       }
 
@@ -364,7 +373,12 @@ const isHit = (t: Tsum, mx: number, my: number) => {
 
       t.selected = true;
       chainRef.current.push(t.id);
-
+const now = performance.now();
+if (linkSound.current && now - lastLinkSoundRef.current > 80) {
+  lastLinkSoundRef.current = now;
+  linkSound.current.currentTime = 0;
+  linkSound.current.play();
+}
       return;
     }
   };
@@ -440,7 +454,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
         if (i === 0) ctx.moveTo(t.x, t.y);
         else ctx.lineTo(t.x, t.y);
       });
-      ctx.strokeStyle = "rgba(100,100,100,0.6)";
+      ctx.strokeStyle = "rgba(255,255,255,0.6)";
       ctx.stroke();
     }
 
