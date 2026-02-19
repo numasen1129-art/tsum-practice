@@ -109,8 +109,8 @@ const deleteSound = useRef<HTMLAudioElement | null>(null);
      初期化
   ===================================================== */
  useEffect(() => {
-  linkSound.current = new Audio("/link.mp3");
-  deleteSound.current = new Audio("/delete.mp3");
+ // linkSound.current = new Audio("/link.mp3");
+ // deleteSound.current = new Audio("/delete.mp3");
 
   return stopTimer;
 }, []);
@@ -364,7 +364,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
 
       t.selected = true;
       chainRef.current.push(t.id);
-(linkSound.current?.cloneNode(true) as HTMLAudioElement)?.play();
+
       return;
     }
   };
