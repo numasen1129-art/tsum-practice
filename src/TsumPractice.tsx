@@ -16,8 +16,8 @@ type Tsum = {
 /* =====================================================
    定数
 ===================================================== */
-const VIEW_WIDTH = Math.min(window.innerWidth - 20, 440); 
-const VIEW_HEIGHT = VIEW_WIDTH + 120; // 縦だけ +120px
+const VIEW_WIDTH = Math.min(window.innerWidth, 440); 
+const VIEW_HEIGHT = VIEW_WIDTH + 120;
 const FIELD_SIZE = VIEW_WIDTH - 80;
 const OFFSET = (VIEW_WIDTH - FIELD_SIZE) / 2;
 
