@@ -16,9 +16,9 @@ type Tsum = {
 /* =====================================================
    定数
 ===================================================== */
-const VIEW_SIZE = Math.min(window.innerWidth, 500) + 60;
-const FIELD_SIZE = VIEW_SIZE - 20;   
-const OFFSET = 10;                
+const FIELD_SIZE = Math.min(window.innerWidth, 500) - 20;
+const VIEW_SIZE = FIELD_SIZE + 60;          
+const OFFSET = 10;      
 
 const TSUM_COUNT = 45;
 const TSUM_RADIUS = FIELD_SIZE / 7 / 2;
