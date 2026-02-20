@@ -16,9 +16,10 @@ type Tsum = {
 /* =====================================================
    定数
 ===================================================== */
-const FIELD_SIZE = 360;
-const VIEW_SIZE = Math.min(window.innerWidth, 440) + 60; 
-const OFFSET = (VIEW_SIZE - 60 - FIELD_SIZE) / 2;
+const VIEW_WIDTH = Math.min(window.innerWidth - 20, 440); 
+const VIEW_HEIGHT = VIEW_WIDTH + 120; // 縦だけ +120px
+const FIELD_SIZE = VIEW_WIDTH - 80;
+const OFFSET = (VIEW_WIDTH - FIELD_SIZE) / 2;
 
 const TSUM_COUNT = 45;
 const TSUM_RADIUS = FIELD_SIZE / 7 / 2;
@@ -407,7 +408,7 @@ const isHit = (t: Tsum, mx: number, my: number) => {
   ===================================================== */
   const draw = () => {
     const ctx = canvasRef.current!.getContext("2d")!;
-    ctx.clearRect(0, 0, VIEW_SIZE, VIEW_SIZE);
+    ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
 
     /* --- 時間ゲージ --- */
     const elapsed = Date.now() - gameStartTimeRef.current;
@@ -417,9 +418,9 @@ const isHit = (t: Tsum, mx: number, my: number) => {
 
     ctx.fillStyle =
       remain <= WARNING_TIME_MS ? "#ff4d4d" : "#4caf50";
-    ctx.fillRect(0, 0, VIEW_SIZE * ratio, barH);
+    ctx.fillRect(0, 0, VIEW_WIDTH * ratio, barH);
     ctx.strokeStyle = "#333";
-    ctx.strokeRect(0, 0, VIEW_SIZE, barH);
+    ctx.strokeRect(0, 0, VIEW_WIDTH, barH);
 
     ctx.save();
     ctx.translate(OFFSET, OFFSET);
@@ -491,11 +492,11 @@ const isHit = (t: Tsum, mx: number, my: number) => {
      JSX
   ===================================================== */
  return (
-  <div style={{ position: "relative", width: VIEW_SIZE, margin: "0 auto" }}>
+<div style={{ position: "relative", width: VIEW_WIDTH, margin: "0 auto" }}>
     <canvas
       ref={canvasRef}
-      width={VIEW_SIZE}
-      height={VIEW_SIZE}
+width={VIEW_WIDTH}
+height={VIEW_HEIGHT}
 
   
       onMouseDown={e => {
